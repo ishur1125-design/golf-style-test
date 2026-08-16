@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 라운드 스타일 — 골프 심리테스트</title>
+<meta name="description" content="18홀 문항으로 알아보는 나의 라운드 스타일. 재미로 보는 골프 심리테스트입니다.">
+
+<!-- ==========================================================
+     배포 주소. 레포 이름을 golf-style-test 외의 것으로 만들었다면
+     아래 og:url / og:image 두 줄과 스크립트 상단의 SITE 값을 함께 맞춰주세요.
+     ========================================================== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="회계사의 클럽하우스">
+<meta property="og:title" content="나의 라운드 스타일 — 골프 심리테스트">
+<meta property="og:description" content="스코어는 실력이 만들지만, 라운드는 성향이 만듭니다. 18홀 문항으로 보는 나의 라운드 스타일.">
+<meta property="og:url" content="https://ishur1125.github.io/golf-style-test/">
+<meta property="og:image" content="https://ishur1125.github.io/golf-style-test/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2317362B'/%3E%3Ccircle cx='16' cy='13' r='6.5' fill='%23E7E2D3'/%3E%3Crect x='14.5' y='19' width='3' height='9' fill='%23A8862F'/%3E%3C/svg%3E">
+
+<style>
+  :root{
+    --turf:#17362B; --turf-soft:#2E5546; --paper:#E7E2D3; --card:#F5F2E9;
+    --rule:#C2B9A2; --ink:#2B2A26; --ink-soft:#6B665A; --red:#9E3B26; --brass:#A8862F;
+    --serif: Georgia, 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif;
+    --sans: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink); font-family:var(--sans);
+    -webkit-text-size-adjust:100%; word-break:keep-all;
+  }
+  #app{max-width:720px; margin:0 auto; padding:24px 18px 56px;}
+
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);}
+  .card{background:var(--card); border:1px solid var(--rule); box-shadow:0 1px 0 var(--rule), 3px 3px 0 rgba(23,54,43,.06);}
+  .serif{font-family:var(--serif);}
+  .center{text-align:center;}
+  .muted{color:var(--ink-soft);}
+  .hair{width:34px;height:1px;background:var(--brass);margin:16px auto;}
+
+  h1.title{font-family:var(--serif); font-size:38px; line-height:1.25; font-weight:400; color:var(--turf); margin:0 0 14px; letter-spacing:-.01em;}
+  @media (max-width:400px){ h1.title{font-size:31px;} }
+
+  .badge-test{
+    display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    color:var(--red); border:1px solid var(--red); padding:5px 11px; border-radius:2px;
+  }
+
+  button{font-family:var(--sans); cursor:pointer;}
+  .btn{border:1px solid var(--turf); background:transparent; color:var(--turf); transition:background .14s ease,color .14s ease; border-radius:2px;}
+  .btn:hover{background:var(--turf); color:var(--card);}
+  .btn:focus-visible{outline:2px solid var(--brass); outline-offset:2px;}
+  .btn-solid{background:var(--turf); color:var(--card);}
+  .btn-solid:hover{background:var(--turf-soft);}
+  .btn-block{width:100%; padding:16px; font-size:16px; letter-spacing:.02em;}
+
+  .opt{
+    width:100%; text-align:left; padding:13px 16px; margin-bottom:8px;
+    display:flex; align-items:center; gap:14px; font-size:15px; line-height:1.55;
+    background:var(--card);
+  }
+  .opt .num{
+    font-family:var(--mono); font-size:12px; width:22px; height:22px; flex:none;
+    display:inline-flex; align-items:center; justify-content:center; border:1px solid currentColor;
+  }
+  .opt.sel{background:var(--turf); color:var(--card);}
+
+  .chip{
+    border:1px solid var(--rule); background:var(--card); color:var(--ink);
+    padding:9px 13px; font-size:14px; border-radius:2px; transition:all .12s ease;
+  }
+  .chip:hover{border-color:var(--turf);}
+  .chip.on{background:var(--turf); color:var(--card); border-color:var(--turf);}
+  .chiprow{display:flex; flex-wrap:wrap; gap:7px;}
+
+  input[type=text]{
+    width:100%; padding:12px 14px; font-size:16px; font-family:var(--sans);
+    background:var(--card); border:1px solid var(--rule); border-radius:2px; color:var(--ink);
+  }
+  input[type=text]:focus{outline:none; border-color:var(--turf);}
+
+  .ticks{display:flex; gap:2px; height:6px; margin-bottom:30px;}
+  .tick{flex:1; border:1px solid var(--rule);}
+  .tick.done{background:var(--turf); border-color:transparent;}
+  .tick.now{background:var(--brass); border-color:transparent;}
+
+  .row{display:flex; align-items:center; gap:12px; border-top:1px solid var(--rule); padding:11px 0;}
+  .row:last-of-type{border-bottom:1px solid var(--rule);}
+
+  .linkish{background:none; border:none; color:var(--ink-soft); font-size:13px; padding:6px 0;}
+  .fadein{animation:fade .35s ease both;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(23,54,43,.82); z-index:50;
+    display:flex; align-items:center; justify-content:center; padding:20px; overflow:auto;
+  }
+  .overlay img{max-width:100%; max-height:64vh; border:1px solid var(--rule); display:block; margin:0 auto 14px;}
+
+  @media (prefers-reduced-motion: reduce){
+    .btn,.chip{transition:none;} .fadein{animation:none;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------
+   회계사의 클럽하우스 — 나의 라운드 스타일 (골프 심리테스트)
+
+   리커트 문항 출처: IPIP (International Personality Item Pool, Public Domain)
+                     Goldberg's Big-Five Factor Markers 중 발췌, 골프 상황으로 각색.
+   상황형 문항은 자체 제작.
+   오락용 콘텐츠이며 심리학적 진단이 아닙니다.
+------------------------------------------------------------------- */
+
+var SITE = "https://ishur1125.github.io/golf-style-test/"; // 결과 카드 하단에 찍히는 주소
+
+var P = {
+  turf:'#17362B', turfSoft:'#2E5546', paper:'#E7E2D3', card:'#F5F2E9',
+  rule:'#C2B9A2', ink:'#2B2A26', inkSoft:'#6B665A', red:'#9E3B26', brass:'#A8862F'
+};
+
+var FACTORS = [
+  {k:'E', label:'사교성',   full:'라운드에서 어떻게 어울리는가'},
+  {k:'A', label:'배려심',   full:'동반자를 어떻게 대하는가'},
+  {k:'C', label:'준비성',   full:'준비와 관리'},
+  {k:'S', label:'멘탈',     full:'무너졌을 때'},
+  {k:'O', label:'코스 이해', full:'코스를 어떻게 읽는가'}
+];
+var FMAP = {}; FACTORS.forEach(function(f){ FMAP[f.k]=f; });
+
+/* ---------- 18홀 ---------- */
+var Q = [
+  {f:'E', r:0, t:'처음 만난 조인 동반자와도 첫 홀을 넘기기 전에 말을 트는 편이다.'},
+  {f:'C', r:0, t:'티오프 시간보다 여유 있게 도착해 몸을 푼다.'},
+  {f:'A', r:0, t:'동반자의 샷이 무너지면 내 라운드보다 그쪽이 더 신경 쓰인다.'},
+  {f:'S', r:1, t:'OB 한 방이면 그 홀 내내 흔들린다.'},
+  {f:'S', sit:1, t:'티샷이 그대로 OB 말뚝을 넘어갔습니다. 지금 머릿속은?', o:[
+    {t:'어차피 한 홀이다. 벌타 먹고 다음 샷을 준비한다.', v:5},
+    {t:'짜증은 나지만, 티를 다시 꽂으면 대체로 잊는다.', v:4},
+    {t:'왜 저리 갔지. 남은 홀 내내 스윙을 되짚게 된다.', v:2},
+    {t:'오늘 라운드는 여기서 끝났다는 생각이 든다.', v:1}
+  ]},
+  {f:'O', r:0, t:'처음 가는 코스에서는 어떤 공략이 나올지 미리 그려본다.'},
+  {f:'E', r:1, t:'라운드 중에는 별로 말을 하지 않는다.'},
+  {f:'C', r:1, t:'연습하기로 마음먹은 날에도 이런저런 핑계로 거르곤 한다.'},
+  {f:'A', r:1, t:'동반자가 몇 타를 치든 내 알 바 아니다.'},
+  /* --- 9홀 종료, 그늘집 --- */
+  {f:'S', r:0, t:'스코어가 무너져도 대체로 평정심을 유지한다.'},
+  {f:'O', r:1, t:'스윙 이론이나 원리에는 관심 없고 그냥 치는 게 좋다.'},
+  {f:'O', sit:1, t:'파5 홀. 두 번째 샷 앞은 워터 해저드입니다. 잘 맞으면 넘어가는 거리.', o:[
+    {t:'거리와 바람을 재고, 안전한 레이업 지점을 고른다.', v:5},
+    {t:'레이업. 늘 100야드를 남기는 게 편하다.', v:4},
+    {t:'동반자가 뭘 잡는지 보고 정한다.', v:3},
+    {t:'3번 우드. 넘어가면 이글 찬스다.', v:1}
+  ]},
+  {f:'E', r:0, t:'티박스에서 순서를 정하거나 분위기를 이끄는 쪽이다.'},
+  {f:'C', r:0, t:'퍼팅 전에 라이와 잔디결까지 꼼꼼히 확인한다.'},
+  {f:'A', r:0, t:'나와 한 조로 돌면 편했다는 말을 듣는 편이다.'},
+  {f:'S', r:1, t:'앞 홀에서 좋았다가 다음 홀에서 확 가라앉는 기복이 있다.'},
+  {f:'A', sit:1, t:'초보 동반자가 벙커에서 세 번째 탈출에 실패했습니다. 뒷 조는 이미 티박스에 올라왔습니다.', o:[
+    {t:'괜찮다고 말해주고 옆에서 라인을 잡아준다.', v:5},
+    {t:'말없이 기다린다. 재촉하면 더 안 된다.', v:4},
+    {t:'웃으면서 공을 집어 그린 옆에 놓으시라고 권한다.', v:3},
+    {t:'먼저 그린으로 이동해 내 퍼팅 라인을 본다.', v:1}
+  ]},
+  {f:'O', r:0, t:'같은 상황에서도 여러 공략 루트가 떠오른다.'}
+];
+var INTERLUDE_AT = 9; // 9홀을 마치면 그늘집
+
+var SCALE = [
+  {v:1, label:'전혀 아니다'},
+  {v:2, label:'아닌 편이다'},
+  {v:3, label:'보통이다'},
+  {v:4, label:'그런 편이다'},
+  {v:5, label:'매우 그렇다'}
+];
+
+/* ---------- 인적사항 ---------- */
+var PROFILE = [
+  {k:'gender',  label:'성별',           o:[['m','남성'],['f','여성'],['x','밝히지 않음']]},
+  {k:'age',     label:'나이대',          o:[['20','20대 이하'],['30','30대'],['40','40대'],['50','50대'],['60','60대 이상']]},
+  {k:'years',   label:'구력',            o:[['y0','1년 미만'],['y1','1~3년'],['y3','3~7년'],['y7','7년 이상']]},
+  {k:'avg',     label:'평균 타수',        o:[['s100','100타 이상'],['s90','90대'],['s80','80대'],['s70','70대 이하'],['sx','아직 모르겠다']]},
+  {k:'purpose', label:'주로 나가는 이유',  o:[['biz','접대·비즈니스'],['friend','친구·동호회'],['family','가족'],['solo','혼자 조인'],['bet','내기']]}
+];
+function plabel(key, val){
+  var g = PROFILE.filter(function(p){return p.k===key;})[0];
+  if(!g || !val) return '';
+  var hit = g.o.filter(function(x){return x[0]===val;})[0];
+  return hit ? hit[1] : '';
+}
+var BAND = {s100:'a', s90:'b', s80:'c', s70:'c'}; // 팁 분기용 (sx는 기본 팁)
+
+/* ---------- 8유형 ---------- */
+var TYPES = {
+  HHH:{name:'코스 매니저', en:'The Course Manager', tag:'판을 읽고, 판을 끌고 간다',
+    body:'티오프 전에 이미 오늘 라운드의 그림이 그려져 있습니다. 무너져도 다음 홀에서 되돌아오고, 조 전체의 페이스까지 챙깁니다. 동반자들이 은근히 기대는 자리에 서 있는 유형입니다.',
+    strength:'준비·멘탈·리더십이 고르게 받쳐줍니다. 스코어 편차가 작습니다.',
+    watch:'다 챙기다 보면 정작 본인 샷에 쓸 집중력이 남지 않을 때가 있습니다. 후반 들어 갑자기 흔들린다면 대개 이 이유입니다.',
+    tip:'전반 9홀은 조를 챙기고, 후반 9홀은 본인 스코어만 보세요.',
+    caddie:'새 클럽보다 야디지북. 이미 칠 줄 아는 사람에겐 정보만 더 주면 됩니다.'},
+  HHL:{name:'사일런트 스나이퍼', en:'The Silent Sniper', tag:'말은 아끼고 스코어로 말한다',
+    body:'요란하지 않게, 하던 대로 칩니다. 준비는 이미 끝나 있고 흔들려도 티가 잘 나지 않습니다. 라운드가 끝나고 스코어카드를 볼 때 비로소 "이 사람 잘 치네" 소리가 나오는 유형입니다.',
+    strength:'외부 자극에 흔들리지 않습니다. 내기 상황에서 특히 강합니다.',
+    watch:'조용한 게 무심함으로 읽힐 수 있습니다. 동반자 입장에선 눈치를 보게 되는 경우가 있습니다.',
+    tip:'홀당 한 마디면 충분합니다. 잘 친 동반자 샷에 짧게 반응해 주세요.',
+    caddie:'퍼팅 매트. 조용한 사람의 스코어는 대개 그린 위에서 만들어집니다.'},
+  HLH:{name:'하이텐션 퍼펙셔니스트', en:'The High-Tension Perfectionist', tag:'준비는 완벽한데, 마음이 앞선다',
+    body:'연습도 준비도 남들보다 앞서 있습니다. 그래서 뜻대로 안 될 때 더 크게 반응합니다. 잘 풀리는 날의 텐션과 안 풀리는 날의 낙차가 가장 큰 유형입니다.',
+    strength:'준비량이 많아 좋은 날의 상한선이 높습니다. 분위기도 살립니다.',
+    watch:'한 홀의 실수가 세 홀로 번집니다. 스코어를 깎아먹는 건 실력이 아니라 대개 다음 홀의 무리한 만회 시도입니다.',
+    tip:'OB가 나면 그 홀은 접고 다음 티박스까지 말없이 걸어가 보세요.',
+    caddie:'장비 말고 호흡. 티박스에서 세 번 깊게 쉬는 것이 당신 캐디백의 첫 번째 아이템입니다.'},
+  HLL:{name:'스코어카드 장인', en:'The Scorecard Craftsman', tag:'누구보다 자신에게 엄격하다',
+    body:'라이도, 잔디결도, 야디지도 꼼꼼히 봅니다. 그리고 실수가 나오면 아무 말 없이 혼자 삭입니다. 겉으로는 잔잔한데 속으로는 계속 계산이 돌아가는 유형입니다.',
+    strength:'디테일을 놓치지 않습니다. 어려운 코스일수록 유리합니다.',
+    watch:'자책이 길어지면 스윙이 굳습니다. 남에게 화를 내지 않는 대신 본인을 오래 붙잡습니다.',
+    tip:'홀아웃 후 3초만 아쉬워하고 끊으세요. 복기는 라운드가 끝난 뒤에.',
+    caddie:'스코어 기록 앱. 머릿속 계산을 밖으로 꺼내야 스윙이 풀립니다.'},
+  LHH:{name:'페어웨이 엔터테이너', en:'The Fairway Entertainer', tag:'스코어보다 오늘 하루가 중요하다',
+    body:'연습을 안 하고 나가도 개의치 않고, 무너져도 웃습니다. 조 분위기는 대체로 이 사람이 만듭니다. 같이 치자는 연락을 가장 많이 받는 유형입니다.',
+    strength:'회복력이 좋습니다. 첫 홀 더블보기 후에도 그날 라운드가 살아납니다.',
+    watch:'실력이 잘 늘지 않습니다. 즐거움과 별개로, 스코어는 준비한 만큼만 나옵니다.',
+    tip:'딱 하나만 정하세요. 라운드 전 20분 퍼팅 연습, 그것만으로 몇 타가 줄어듭니다.',
+    caddie:'라운드 전 20분. 장비보다 시간을 사세요.'},
+  LHL:{name:'유유자적 워커', en:'The Easy Strider', tag:'걷는 것 자체가 목적이다',
+    body:'스코어에 크게 매이지 않고, 사람에도 크게 매이지 않습니다. 잔디와 바람과 걷는 시간이 좋아서 나옵니다. 가장 오래, 가장 다치지 않고 골프를 즐길 유형입니다.',
+    strength:'번아웃이 없습니다. 골프를 평생 취미로 가져갈 수 있는 성향입니다.',
+    watch:'느슨함이 슬로플레이로 이어지면 다른 조에 영향을 줍니다. 즐기는 것과 늘어지는 것은 다릅니다.',
+    tip:'속도만 지키면 됩니다. 카트 이동 중에 다음 클럽을 미리 골라두세요.',
+    caddie:'편한 신발. 오래 걸을 사람에게 가장 확실한 투자입니다.'},
+  LLH:{name:'티박스 갬블러', en:'The Teebox Gambler', tag:'질러야 직성이 풀린다',
+    body:'레이업이라는 단어를 별로 좋아하지 않습니다. 워터 해저드 너머로 그냥 붙입니다. 되면 그날의 명장면이고, 안 되면 그날의 참사입니다. 스코어 진폭이 가장 큰 유형입니다.',
+    strength:'과감함이 통할 때 나오는 홀은 누구도 흉내 못 냅니다. 라운드가 재밌습니다.',
+    watch:'기복이 준비 부족과 겹치면 무너지는 속도가 빠릅니다. 한 홀 폭탄이 라운드 전체를 결정합니다.',
+    tip:'라운드당 "지르기"는 세 번만 쓰겠다고 정하고 나가 보세요.',
+    caddie:'3번 우드를 잠시 빼두세요. 백에 없으면 지를 수 없습니다.'},
+  LLL:{name:'감성 라운더', en:'The Sentimental Rounder', tag:'머리보다 손끝의 감각으로 친다',
+    body:'이론이나 계산보다 그날의 느낌으로 칩니다. 감이 오는 날은 놀랄 만큼 잘 치고, 안 오는 날은 이유도 모른 채 헤맵니다. 조용히, 자기 세계 안에서 라운드를 합니다.',
+    strength:'몸이 기억하는 샷이 있습니다. 잘 맞는 날의 임팩트는 이론파가 못 따라옵니다.',
+    watch:'재현이 안 됩니다. 좋았던 감각을 기록해 두지 않으면 다음 라운드에 그대로 사라집니다.',
+    tip:'잘 맞은 날, 딱 한 줄만 메모하세요. "오른발에 힘 빼고 천천히" 정도면 충분합니다.',
+    caddie:'휴대폰 메모장. 감각은 적어두지 않으면 다음 라운드에 사라집니다.'}
+};
+
+/* ---------- 평균 타수 × 유형 처방 ---------- */
+var TIPS = {
+  HHH:{a:'조를 챙기는 건 잠시 내려놓으세요. 지금은 당신 볼만 보는 게 스코어에 가장 빠른 길입니다.',
+       b:'전반은 조를 챙기고 후반은 본인 스코어만 보세요. 90타 벽은 대개 후반 9홀에서 깨집니다.',
+       c:'이미 관리가 되는 사람입니다. 남은 건 파5 두 번째 샷 판단 하나. 그것만 보수적으로 가져가세요.'},
+  HHL:{a:'조용히 잘 따라오고 있습니다. 다만 100타는 드라이버가 아니라 100야드 안쪽에서 깨집니다. 웨지만 파세요.',
+       b:'흔들리지 않는 게 최대 무기입니다. 스코어카드에 퍼팅 수를 따로 적어보세요. 줄어들 곳이 바로 보입니다.',
+       c:'실력은 이미 있습니다. 내기나 시합처럼 압박이 걸리는 자리를 일부러 만드세요. 당신이 가장 강한 조건입니다.'},
+  HLH:{a:'연습량은 충분합니다. 문제는 라운드 중 스윙 생각이 세 개라는 것. 오늘은 하나만 들고 나가세요.',
+       b:'OB가 나면 그 홀은 접고 다음 티박스까지 말없이 걸어가세요. 만회 시도가 당신 스코어를 가장 많이 깎습니다.',
+       c:'80대에서 70대로 가는 건 기술이 아니라 더블보기를 안 하는 일입니다. 트러블에서는 무조건 페어웨이로 빼세요.'},
+  HLL:{a:'너무 오래 봅니다. 어드레스 후 3초 안에 친다는 규칙을 정해보세요. 그것만으로 몇 타가 줄어듭니다.',
+       b:'홀아웃 후 3초만 아쉬워하고 끊으세요. 복기는 라운드가 끝난 뒤에 몰아서 하면 됩니다.',
+       c:'당신의 디테일은 이미 자산입니다. 첫 홀에 그린 스피드만 확인해두면 후반 퍼팅이 달라집니다.'},
+  LHH:{a:'라운드 전 20분 퍼팅 연습, 그거 하나만 해보세요. 100타는 대개 그것만으로 깨집니다.',
+       b:'즐거움은 이미 충분합니다. 딱 한 클럽만 정해 그것만 연습해보세요. 7번 아이언을 추천합니다.',
+       c:'재능형입니다. 스코어를 기록하는 습관만 붙이면 70대가 보입니다. 감으로 친 날은 반드시 메모하세요.'},
+  LHL:{a:'속도만 지키면 됩니다. 카트 이동 중에 다음 클럽을 미리 골라두세요. 그것만으로 조가 편해집니다.',
+       b:'무리하지 않는 게 강점입니다. 파3에서 원온을 노리지 않는 것만으로 90타는 유지됩니다.',
+       c:'지금 페이스가 가장 좋습니다. 굳이 바꾸지 마세요. 대신 라운드 수를 늘리면 타수는 자연히 내려갑니다.'},
+  LLH:{a:'"지르기"는 라운드당 세 번만 쓰겠다고 정하고 나가세요. 100타는 실력이 아니라 한 홀 폭탄 때문입니다.',
+       b:'레이업이라는 단어와 친해질 시간입니다. 파5 두 번째 샷을 무조건 끊으면 90타는 바로 깨집니다.',
+       c:'과감함이 통하는 실력은 됩니다. 다만 17·18홀만은 안전하게. 마지막 두 홀이 당신 스코어를 결정합니다.'},
+  LLL:{a:'감이 오는 날만 잘 쳐서는 100타가 안 깨집니다. 셋업 자세 하나만 고정해보세요. 나머지는 감으로 쳐도 됩니다.',
+       b:'잘 맞은 날, 딱 한 줄만 메모하세요. "오른발에 힘 빼고 천천히" 정도면 충분합니다.',
+       c:'몸의 기억이 좋은 사람입니다. 좋았던 날의 스윙을 영상으로 남겨두세요. 슬럼프에서 돌아오는 속도가 달라집니다.'}
+};
+
+/* ---------- 라운드 목적 × 멘탈 ---------- */
+var PURPOSE_MSG = {
+  biz:{h:'접대 라운드에서 당신은 안전한 사람입니다. 무너져도 표정이 변하지 않는 건 생각보다 큰 자산입니다.',
+       l:'접대 자리에서 가장 위험한 건 당신의 표정입니다. 스코어가 무너진 홀에서는 한 번 숨을 고르고 카트에 오르세요.'},
+  friend:{h:'동호회에서 당신은 페이스를 잡아주는 쪽입니다. 분위기가 처질 때 한 마디만 얹어주면 조가 삽니다.',
+          l:'친한 사이일수록 감정이 그대로 나옵니다. 오늘 안 풀린 건 오늘로 끝내세요. 뒤풀이까지 끌고 가지 마시고요.'},
+  family:{h:'가족 라운드에서 스코어는 부차적입니다. 당신은 이미 그걸 아는 쪽이라 같이 나가기 편한 사람입니다.',
+          l:'가족과 나갈 때만은 스코어카드를 접어두세요. 당신이 흔들리면 그날 분위기가 같이 내려갑니다.'},
+  solo:{h:'조인에 강한 유형입니다. 처음 만난 사람과도 라운드가 편하게 굴러갑니다.',
+        l:'조인은 변수가 많습니다. 첫 세 홀은 스코어를 아예 세지 않겠다고 정하고 시작해보세요.'},
+  bet:{h:'내기에 강합니다. 압박이 붙을수록 오히려 평소 스윙이 나오는 쪽입니다.',
+       l:'내기는 당신에게 불리한 조건입니다. 금액을 줄이거나, 홀당이 아니라 전체 스코어로 거는 방식을 택하세요.'}
+};
+
+var BADGE_A = {
+  high:{name:'동반자 배려형', desc:'조의 온도를 올리는 쪽입니다. 초보와 나가도 서로 편합니다.'},
+  low:{name:'마이웨이형', desc:'내 리듬을 지킵니다. 대신 동반자가 눈치를 볼 수 있습니다.'}
+};
+var BADGE_O = {
+  high:{name:'코스 리더형', desc:'치기 전에 그림을 그립니다. 낯선 코스에서 강합니다.'},
+  low:{name:'감각 스윙형', desc:'덜 재고 바로 칩니다. 익숙한 홈코스에서 강합니다.'}
+};
+
+/* ==================================================================
+   상태
+================================================================== */
+var S = {
+  stage:'cover',              // cover | profile | quiz | interlude | analyzing | result
+  idx:0,
+  answers:{},                 // idx -> 리커트 1~5 또는 상황형 선택지 index
+  profile:{nick:'', gender:'', age:'', years:'', avg:'', purpose:''},
+  analyzeStep:0,
+  cardURL:null
+};
+
+/* ==================================================================
+   채점
+================================================================== */
+function score(upTo){
+  var limit = (upTo === undefined) ? Q.length : upTo;
+  var raw={E:0,A:0,C:0,S:0,O:0}, cnt={E:0,A:0,C:0,S:0,O:0};
+  for(var i=0;i<limit;i++){
+    var q=Q[i], a=S.answers[i];
+    if(a===undefined || a===null) continue;
+    cnt[q.f]++;
+    raw[q.f] += q.sit ? q.o[a].v : (q.r ? 6-a : a);
+  }
+  var out={};
+  ['E','A','C','S','O'].forEach(function(k){
+    out[k] = cnt[k] ? Math.round((raw[k]-cnt[k])/(4*cnt[k])*100) : 50;
+  });
+  return out;
+}
+
+function resultOf(sc){
+  var code = (sc.C>=50?'H':'L') + (sc.S>=50?'H':'L') + (sc.E>=50?'H':'L');
+  return {
+    code: code,
+    type: TYPES[code],
+    badgeA: sc.A>=50 ? BADGE_A.high : BADGE_A.low,
+    badgeO: sc.O>=50 ? BADGE_O.high : BADGE_O.low
+  };
+}
+
+function tipFor(code){
+  var band = BAND[S.profile.avg];
+  if(band && TIPS[code] && TIPS[code][band]) return TIPS[code][band];
+  return TYPES[code].tip;
+}
+
+function introLine(code){
+  var bits=[];
+  if(S.profile.years) bits.push('구력 '+plabel('years', S.profile.years));
+  if(S.profile.avg && S.profile.avg!=='sx') bits.push('평균 '+plabel('avg', S.profile.avg));
+  var who = bits.length ? bits.join(', ')+'의 ' : '';
+  return who + TYPES[code].name + '입니다.';
+}
+
+function interludeMsg(sc){
+  if(sc.C>=65) return '준비는 확실히 되어 있는 편이네요. 후반은 그 준비가 스코어로 나오는 구간입니다.';
+  if(sc.S<=35) return '전반에 한 번 크게 흔들린 티가 납니다. 후반 첫 홀은 안전하게 시작해보세요.';
+  if(sc.E>=65) return '조 분위기는 당신이 만들고 있네요. 후반에도 그 페이스면 됩니다.';
+  if(sc.A>=65) return '동반자 쪽을 계속 신경 쓰고 계시네요. 후반 9홀은 본인 볼만 보셔도 좋습니다.';
+  if(sc.C<=35) return '준비보다는 감으로 가는 쪽이네요. 후반은 클럽 선택만 한 번 더 생각해보세요.';
+  return '아직은 조용히 페이스를 지키고 계십니다. 승부는 후반에서 갈립니다.';
+}
+
+function analyzeLines(){
+  var L = ['18홀 응답 집계 중'];
+  var who=[];
+  if(S.profile.age) who.push(plabel('age', S.profile.age));
+  if(S.profile.gender && S.profile.gender!=='x') who.push(plabel('gender', S.profile.gender));
+  if(S.profile.years) who.push('구력 '+plabel('years', S.profile.years));
+  if(S.profile.avg && S.profile.avg!=='sx') who.push('평균 '+plabel('avg', S.profile.avg));
+  L.push(who.length ? who.join(' · ')+' 응답 패턴 대조 중' : '응답 패턴 대조 중');
+  L.push('다섯 개 축 정규화 중');
+  L.push('유형 판정 중');
+  return L;
+}
+
+/* ==================================================================
+   레이더 (SVG)
+================================================================== */
+var SVG_SANS = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
+var SVG_MONO = "ui-monospace,Menlo,Consolas,monospace";
+var A0 = -Math.PI/2;
+function axisPt(i, rr, cx, cy){
+  var a = A0 + i*2*Math.PI/5;
+  return [cx + rr*Math.cos(a), cy + rr*Math.sin(a)];
+}
+function radarSVG(sc){
+  var W=340, H=310, cx=170, cy=152, R=92;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="100%" role="img" aria-label="다섯 축 프로파일">';
+  [0.25,0.5,0.75,1].forEach(function(f){
+    var pts=[]; for(var i=0;i<5;i++){ var p=axisPt(i,R*f,cx,cy); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    s+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="'+P.rule+'" stroke-width="1"/>';
+  });
+  for(var i=0;i<5;i++){
+    var p=axisPt(i,R,cx,cy);
+    s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="'+P.rule+'" stroke-width="1"/>';
+  }
+  var dp=[];
+  for(var j=0;j<5;j++){
+    var v=Math.max(0,Math.min(100,sc[FACTORS[j].k]));
+    var q=axisPt(j, R*(v/100), cx, cy);
+    dp.push(q[0].toFixed(1)+','+q[1].toFixed(1));
+  }
+  s+='<polygon points="'+dp.join(' ')+'" fill="'+P.turfSoft+'" fill-opacity="0.3" stroke="'+P.turf+'" stroke-width="2" stroke-linejoin="round"/>';
+  for(var m=0;m<5;m++){
+    var d=dp[m].split(',');
+    s+='<circle cx="'+d[0]+'" cy="'+d[1]+'" r="3" fill="'+P.turf+'"/>';
+  }
+  for(var n=0;n<5;n++){
+    var lp=axisPt(n, R+26, cx, cy);
+    var ax=lp[0], anchor='middle';
+    if(ax>cx+12) anchor='start'; else if(ax<cx-12) anchor='end';
+    s+='<text x="'+ax.toFixed(1)+'" y="'+(lp[1]+4).toFixed(1)+'" text-anchor="'+anchor+
+       '" font-size="13" fill="'+P.turf+'" style="font-family:'+SVG_SANS+'">'+FACTORS[n].label+'</text>';
+    s+='<text x="'+ax.toFixed(1)+'" y="'+(lp[1]+19).toFixed(1)+'" text-anchor="'+anchor+
+       '" font-size="10.5" fill="'+P.inkSoft+'" style="font-family:'+SVG_MONO+'">'+sc[FACTORS[n].k]+'</text>';
+  }
+  return s+'</svg>';
+}
+
+/* ==================================================================
+   화면
+================================================================== */
+var app = document.getElementById('app');
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function viewCover(){
+  return ''+
+  '<div class="center" style="padding-top:26px">'+
+    '<span class="badge-test">재미로 보는 심리테스트</span>'+
+    '<div class="hair"></div>'+
+    '<div class="eyebrow">회계사의 클럽하우스</div>'+
+    '<h1 class="title" style="margin-top:14px">나의 라운드 스타일</h1>'+
+    '<p style="font-size:15px;line-height:1.75;color:var(--ink-soft);max-width:430px;margin:0 auto 10px">'+
+      '스코어는 실력이 만들지만, 라운드는 성향이 만듭니다.<br>18홀 문항으로 당신이 필드에서 어떤 사람인지 살펴봅니다.'+
+    '</p>'+
+    '<p style="font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);letter-spacing:.05em;margin:0 0 30px">'+
+      '18문항 · 약 3분 · 오락용 콘텐츠이며 심리 진단이 아닙니다'+
+    '</p>'+
+  '</div>'+
+  '<div class="card" style="padding:26px 22px;margin-bottom:22px">'+
+    '<div class="eyebrow" style="margin-bottom:14px">측정하는 다섯 가지</div>'+
+    FACTORS.map(function(f,i){
+      return '<div style="display:flex;align-items:baseline;gap:12px;padding:9px 0;'+
+        (i===0?'':'border-top:1px solid var(--rule)')+'">'+
+        '<span style="font-family:var(--mono);font-size:11px;color:var(--brass);width:18px;flex:none">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="serif" style="font-size:17px;color:var(--turf);width:92px;flex:none">'+f.label+'</span>'+
+        '<span style="font-size:13.5px;color:var(--ink-soft)">'+f.full+'</span>'+
+      '</div>';
+    }).join('')+
+  '</div>'+
+  '<button class="btn btn-solid btn-block" data-act="toProfile">시작하기</button>'+
+  '<p class="center" style="font-size:11.5px;line-height:1.7;color:var(--ink-soft);margin-top:20px">'+
+    '리커트 문항은 퍼블릭 도메인 문항 풀인 IPIP(International Personality Item Pool)의<br>'+
+    'Big-Five Factor Markers를 골프 상황으로 각색했습니다.'+
+  '</p>';
+}
+
+function viewProfile(){
+  return ''+
+  '<div style="padding-top:14px;margin-bottom:24px">'+
+    '<div class="eyebrow">STEP 1 / 2</div>'+
+    '<h1 class="title" style="font-size:29px;margin:12px 0 8px">먼저, 당신에 대해</h1>'+
+    '<p style="font-size:14px;line-height:1.7;color:var(--ink-soft);margin:0">'+
+      '같은 응답이라도 구력과 스코어대에 따라 해석이 달라집니다.<br>결과 문구를 맞추는 데 쓰이며, 아무 데도 전송되지 않습니다.'+
+    '</p>'+
+  '</div>'+
+  '<div class="card" style="padding:22px 20px;margin-bottom:18px">'+
+    '<div class="eyebrow" style="margin-bottom:9px">결과 카드에 쓸 이름</div>'+
+    '<input type="text" id="nick" maxlength="10" placeholder="닉네임 (최대 10자)" value="'+esc(S.profile.nick)+'">'+
+  '</div>'+
+  PROFILE.map(function(g){
+    return '<div class="card" style="padding:20px;margin-bottom:12px">'+
+      '<div class="eyebrow" style="margin-bottom:11px">'+g.label+'</div>'+
+      '<div class="chiprow">'+
+        g.o.map(function(o){
+          return '<button class="chip'+(S.profile[g.k]===o[0]?' on':'')+'" data-act="pick" data-k="'+g.k+'" data-v="'+o[0]+'">'+o[1]+'</button>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+  }).join('')+
+  '<button class="btn btn-solid btn-block" data-act="toQuiz" style="margin-top:10px">첫 홀 티오프</button>'+
+  '<button class="linkish" data-act="toCover" style="display:block;margin:12px auto 0">← 처음으로</button>';
+}
+
+function viewQuiz(){
+  var q=Q[S.idx], total=Q.length, hole=S.idx+1;
+  var h = ''+
+  '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">'+
+    '<span class="eyebrow">'+(q.sit?'상황':FMAP[q.f].label)+'</span>'+
+    '<span style="font-family:var(--mono);font-size:12px;color:var(--ink-soft)">'+String(hole).padStart(2,'0')+' / '+total+' HOLE</span>'+
+  '</div>'+
+  '<div class="ticks">'+
+    Q.map(function(_,i){
+      return '<div class="tick'+(i<S.idx?' done':(i===S.idx?' now':''))+'"></div>';
+    }).join('')+
+  '</div>'+
+  '<div class="card fadein" style="padding:30px 24px;margin-bottom:22px">'+
+    '<div class="serif" style="font-size:46px;line-height:1;color:var(--brass);margin-bottom:16px">'+String(hole).padStart(2,'0')+'</div>'+
+    (q.sit?'<div class="eyebrow" style="color:var(--red);margin-bottom:10px">상황 문항</div>':'')+
+    '<p class="serif" style="font-size:21px;line-height:1.65;color:var(--turf);margin:0">'+q.t+'</p>'+
+  '</div>';
+
+  if(q.sit){
+    h += q.o.map(function(o,i){
+      var sel = S.answers[S.idx]===i;
+      return '<button class="btn opt'+(sel?' sel':'')+'" data-act="ans" data-v="'+i+'">'+
+        '<span class="num">'+String.fromCharCode(65+i)+'</span><span>'+o.t+'</span></button>';
+    }).join('');
+  } else {
+    h += SCALE.map(function(s){
+      var sel = S.answers[S.idx]===s.v;
+      return '<button class="btn opt'+(sel?' sel':'')+'" data-act="ans" data-v="'+s.v+'">'+
+        '<span class="num">'+s.v+'</span><span>'+s.label+'</span></button>';
+    }).join('');
+  }
+  if(S.idx>0) h += '<button class="linkish" data-act="back">← 이전 홀</button>';
+  return h;
+}
+
+function viewInterlude(){
+  var sc = score(INTERLUDE_AT);
+  return ''+
+  '<div class="center fadein" style="padding-top:60px">'+
+    '<div class="eyebrow">HALFWAY HOUSE</div>'+
+    '<div class="hair"></div>'+
+    '<h1 class="title" style="font-size:32px;margin-bottom:18px">그늘집</h1>'+
+    '<div class="card" style="padding:28px 22px;text-align:left;margin-bottom:24px">'+
+      '<p class="serif" style="font-size:18px;line-height:1.8;color:var(--turf);margin:0 0 14px">전반 9홀을 마쳤습니다.</p>'+
+      '<p style="font-size:15px;line-height:1.8;margin:0">'+interludeMsg(sc)+'</p>'+
+    '</div>'+
+    '<button class="btn btn-solid btn-block" data-act="resume">후반 9홀 시작</button>'+
+  '</div>';
+}
+
+function viewAnalyzing(){
+  var lines = analyzeLines();
+  return ''+
+  '<div style="padding-top:90px">'+
+    '<div class="center eyebrow" style="margin-bottom:26px">분석 중</div>'+
+    '<div class="card" style="padding:26px 22px">'+
+      lines.map(function(l,i){
+        var on = i<=S.analyzeStep;
+        return '<div style="display:flex;gap:12px;align-items:baseline;padding:10px 0;'+
+          (i===0?'':'border-top:1px solid var(--rule);')+
+          'opacity:'+(on?1:0.25)+';transition:opacity .3s ease">'+
+          '<span style="font-family:var(--mono);font-size:11px;color:'+(on?P.brass:P.rule)+';flex:none">'+(on?'✓':'·')+'</span>'+
+          '<span style="font-size:14px;line-height:1.6">'+l+'</span>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+    '<div style="height:3px;background:rgba(23,54,43,.1);margin-top:22px">'+
+      '<div style="height:100%;background:var(--turf);width:'+Math.round((S.analyzeStep+1)/lines.length*100)+'%;transition:width .5s ease"></div>'+
+    '</div>'+
+  '</div>';
+}
+
+function viewResult(){
+  var sc = score(), r = resultOf(sc), t = r.type;
+  var nick = S.profile.nick.trim();
+  var pm = S.profile.purpose ? PURPOSE_MSG[S.profile.purpose][sc.S>=50?'h':'l'] : '';
+
+  return ''+
+  '<div class="center fadein" style="padding:18px 0 24px">'+
+    '<div class="eyebrow">'+(nick? esc(nick)+'님의 라운드 스타일' : '당신의 라운드 스타일')+'</div>'+
+    '<div style="display:inline-block;border:2px solid var(--turf);padding:22px 30px;margin:18px 0 14px;background:var(--card)">'+
+      '<div style="font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:10px">'+t.en.toUpperCase()+'</div>'+
+      '<div class="serif" style="font-size:34px;color:var(--turf);line-height:1.2">'+t.name+'</div>'+
+    '</div>'+
+    '<p class="serif" style="font-size:16px;color:var(--red);margin:0 0 12px;font-style:italic">'+t.tag+'</p>'+
+    '<p style="font-size:13.5px;color:var(--ink-soft);margin:0">'+introLine(r.code)+'</p>'+
+  '</div>'+
+
+  '<div class="card" style="padding:18px 8px 10px;margin-bottom:20px">'+
+    '<div class="eyebrow" style="padding-left:14px;margin-bottom:2px">다섯 축 프로파일</div>'+
+    '<div style="max-width:400px;margin:0 auto">'+radarSVG(sc)+'</div>'+
+  '</div>'+
+
+  '<div class="card" style="padding:20px 20px 8px;margin-bottom:20px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">'+
+      '<span class="eyebrow">스코어카드</span>'+
+      '<span style="font-family:var(--mono);font-size:10px;color:var(--red)">PAR 50</span>'+
+    '</div>'+
+    FACTORS.map(function(f){
+      var v=sc[f.k], over=v>=50;
+      return '<div class="row">'+
+        '<span class="serif" style="font-size:15px;color:var(--turf);width:74px;flex:none">'+f.label+'</span>'+
+        '<div style="flex:1;height:8px;background:rgba(23,54,43,.08);position:relative">'+
+          '<div style="width:'+v+'%;height:100%;background:'+(over?P.turf:P.red)+'"></div>'+
+          '<div style="position:absolute;left:50%;top:-3px;width:1px;height:14px;background:'+P.brass+'"></div>'+
+        '</div>'+
+        '<span style="font-family:var(--mono);font-size:14px;width:34px;text-align:right;flex:none;color:'+(over?P.turf:P.red)+'">'+v+'</span>'+
+      '</div>';
+    }).join('')+
+    '<p style="font-size:11.5px;color:var(--ink-soft);line-height:1.7;margin:12px 0">가운데 금색 선이 50점 기준입니다. 높고 낮음에 좋고 나쁨은 없습니다.</p>'+
+  '</div>'+
+
+  '<div class="card" style="padding:26px 22px;margin-bottom:20px">'+
+    '<p style="font-size:15.5px;line-height:1.85;margin:0 0 22px">'+t.body+'</p>'+
+    [{k:'잘하는 것', v:t.strength, c:P.turf},
+     {k:'흔들리는 지점', v:t.watch, c:P.red},
+     {k:'다음 라운드 한 가지', v:tipFor(r.code), c:P.brass}].map(function(row){
+      return '<div style="border-top:1px solid var(--rule);padding:14px 0">'+
+        '<div class="eyebrow" style="color:'+row.c+';margin-bottom:6px">'+row.k+'</div>'+
+        '<p style="font-size:14.5px;line-height:1.75;margin:0">'+row.v+'</p>'+
+      '</div>';
+    }).join('')+
+  '</div>'+
+
+  (pm ? '<div class="card" style="padding:22px;margin-bottom:20px">'+
+    '<div class="eyebrow" style="margin-bottom:8px">'+plabel('purpose', S.profile.purpose)+' 라운드라면</div>'+
+    '<p style="font-size:14.5px;line-height:1.8;margin:0">'+pm+'</p>'+
+  '</div>' : '')+
+
+  '<div class="card" style="padding:22px;margin-bottom:20px">'+
+    '<div class="eyebrow" style="margin-bottom:8px">당신의 캐디백에 필요한 것</div>'+
+    '<p class="serif" style="font-size:17px;line-height:1.7;color:var(--turf);margin:0">'+t.caddie+'</p>'+
+  '</div>'+
+
+  '<div style="display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap">'+
+    [r.badgeA, r.badgeO].map(function(b){
+      return '<div class="card" style="flex:1 1 200px;padding:18px">'+
+        '<div class="serif" style="font-size:17px;color:var(--turf);margin-bottom:7px">'+b.name+'</div>'+
+        '<p style="font-size:13.5px;line-height:1.7;margin:0;color:var(--ink-soft)">'+b.desc+'</p>'+
+      '</div>';
+    }).join('')+
+  '</div>'+
+
+  '<button class="btn btn-solid btn-block" data-act="card" style="margin-bottom:10px">결과 카드 이미지 만들기</button>'+
+  '<div style="display:flex;gap:10px">'+
+    '<button class="btn" data-act="copy" style="flex:1;padding:14px;font-size:15px;background:var(--card)">텍스트 복사</button>'+
+    '<button class="btn" data-act="restart" style="flex:1;padding:14px;font-size:15px;background:var(--card)">다시 하기</button>'+
+  '</div>'+
+
+  '<p class="center" style="font-size:11.5px;line-height:1.75;color:var(--ink-soft);margin-top:24px">'+
+    '본 테스트는 오락 목적의 콘텐츠이며 심리학적 진단이 아닙니다.<br>'+
+    '리커트 문항 원본: IPIP Big-Five Factor Markers (Public Domain) — 골프 상황으로 각색.'+
+  '</p>';
+}
+
+function render(){
+  var v = '';
+  if(S.stage==='cover') v=viewCover();
+  else if(S.stage==='profile') v=viewProfile();
+  else if(S.stage==='quiz') v=viewQuiz();
+  else if(S.stage==='interlude') v=viewInterlude();
+  else if(S.stage==='analyzing') v=viewAnalyzing();
+  else v=viewResult();
+  app.innerHTML = v;
+}
+
+/* ==================================================================
+   동작
+================================================================== */
+function go(stage){ S.stage=stage; window.scrollTo(0,0); render(); }
+
+function saveNick(){
+  var el=document.getElementById('nick');
+  if(el) S.profile.nick = el.value;
+}
+
+function answer(v){
+  S.answers[S.idx] = v;
+  var last = S.idx;
+  setTimeout(function(){
+    if(last === INTERLUDE_AT-1){ go('interlude'); return; }
+    if(last < Q.length-1){ S.idx=last+1; window.scrollTo(0,0); render(); return; }
+    startAnalyzing();
+  }, 150);
+  render();
+}
+
+function startAnalyzing(){
+  S.analyzeStep = 0;
+  go('analyzing');
+  var total = analyzeLines().length;
+  var timer = setInterval(function(){
+    S.analyzeStep++;
+    if(S.analyzeStep >= total){
+      clearInterval(timer);
+      setTimeout(function(){ go('result'); }, 550);
+    }
+    render();
+  }, 680);
+}
+
+function restart(){
+  S.answers={}; S.idx=0; S.analyzeStep=0; S.cardURL=null;
+  go('cover');
+}
+
+function shareText(){
+  var sc=score(), r=resultOf(sc), nick=S.profile.nick.trim();
+  return (nick? nick+'님의 ':'')+'라운드 스타일 — '+r.type.name+'\n'+
+    '"'+r.type.tag+'"\n'+
+    '준비성 '+sc.C+' · 멘탈 '+sc.S+' · 사교성 '+sc.E+' · 배려심 '+sc.A+' · 코스 이해 '+sc.O+'\n'+
+    r.badgeA.name+' / '+r.badgeO.name+'\n'+SITE;
+}
+
+app.addEventListener('click', function(e){
+  var b = e.target.closest('[data-act]');
+  if(!b) return;
+  var act = b.getAttribute('data-act');
+
+  if(act==='toProfile') go('profile');
+  else if(act==='toCover') { saveNick(); go('cover'); }
+  else if(act==='pick'){
+    saveNick();
+    var k=b.getAttribute('data-k'), v=b.getAttribute('data-v');
+    S.profile[k] = (S.profile[k]===v) ? '' : v;
+    render();
+  }
+  else if(act==='toQuiz'){ saveNick(); S.idx=0; go('quiz'); }
+  else if(act==='ans') answer(parseInt(b.getAttribute('data-v'),10));
+  else if(act==='back'){ if(S.idx>0){ S.idx--; window.scrollTo(0,0); render(); } }
+  else if(act==='resume'){ S.idx=INTERLUDE_AT; go('quiz'); }
+  else if(act==='restart') restart();
+  else if(act==='copy'){
+    var txt=shareText();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){
+        b.textContent='복사했습니다';
+        setTimeout(function(){ b.textContent='텍스트 복사'; },2000);
+      });
+    }
+  }
+  else if(act==='card') openCard();
+});
+
+document.addEventListener('keydown', function(e){
+  if(S.stage!=='quiz') return;
+  var q=Q[S.idx];
+  var max = q.sit ? q.o.length : 5;
+  var n = parseInt(e.key,10);
+  if(n>=1 && n<=max) answer(q.sit ? n-1 : n);
+  else if(e.key==='ArrowLeft' && S.idx>0){ S.idx--; render(); }
+});
+
+/* ==================================================================
+   결과 카드 (1080 × 1350)
+================================================================== */
+var F = {
+  serif: function(px, style){ return (style||'')+' '+px+'px Georgia, "Nanum Myeongjo", "Apple SD Gothic Neo", "Malgun Gothic", serif'; },
+  sans:  function(px, style){ return (style||'')+' '+px+'px "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'; },
+  mono:  function(px, style){ return (style||'')+' '+px+'px "SFMono-Regular", Menlo, Consolas, monospace'; }
+};
+
+function spacedText(ctx, text, cx, y, sp){
+  var chars = String(text).split('');
+  var w = 0, i;
+  for(i=0;i<chars.length;i++) w += ctx.measureText(chars[i]).width + sp;
+  w -= sp;
+  var x = cx - w/2;
+  for(i=0;i<chars.length;i++){
+    ctx.fillText(chars[i], x, y);
+    x += ctx.measureText(chars[i]).width + sp;
+  }
+}
+
+function fitText(ctx, text, maxW, sizes, fontFn, style){
+  for(var i=0;i<sizes.length;i++){
+    ctx.font = fontFn(sizes[i], style);
+    if(ctx.measureText(text).width <= maxW) return sizes[i];
+  }
+  return sizes[sizes.length-1];
+}
+
+function buildCard(){
+  var W=1080, H=1350;
+  var c=document.createElement('canvas');
+  c.width=W; c.height=H;
+  var ctx=c.getContext('2d');
+  var sc=score(), r=resultOf(sc), t=r.type;
+  var nick=S.profile.nick.trim();
+
+  ctx.fillStyle=P.paper; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=P.card; ctx.fillRect(40,40,W-80,H-80);
+  ctx.strokeStyle=P.rule; ctx.lineWidth=2; ctx.strokeRect(40,40,W-80,H-80);
+  ctx.textBaseline='alphabetic';
+
+  // 상단
+  ctx.fillStyle=P.inkSoft; ctx.font=F.mono(19); ctx.textAlign='left';
+  spacedText(ctx,'회계사의 클럽하우스 · 라운드 스타일 심리테스트', W/2, 128, 3);
+  ctx.fillStyle=P.brass; ctx.fillRect(W/2-30, 152, 60, 2);
+
+  ctx.textAlign='center'; ctx.fillStyle=P.inkSoft; ctx.font=F.sans(28);
+  ctx.fillText(nick ? nick+'님의 라운드 스타일' : '나의 라운드 스타일', W/2, 214);
+
+  // 스탬프
+  ctx.strokeStyle=P.turf; ctx.lineWidth=4; ctx.strokeRect(150, 248, W-300, 196);
+  ctx.fillStyle=P.brass; ctx.font=F.mono(19); ctx.textAlign='left';
+  spacedText(ctx, t.en.toUpperCase(), W/2, 312, 5);
+  ctx.textAlign='center'; ctx.fillStyle=P.turf;
+  var ns=fitText(ctx, t.name, W-360, [64,56,50,44], F.serif);
+  ctx.font=F.serif(ns);
+  ctx.fillText(t.name, W/2, 400);
+
+  // 태그라인
+  ctx.fillStyle=P.red;
+  var ts=fitText(ctx, t.tag, W-260, [34,30,27], F.serif, 'italic');
+  ctx.font=F.serif(ts,'italic');
+  ctx.fillText(t.tag, W/2, 500);
+
+  // 레이더
+  var cx=W/2, cy=745, R=152;
+  ctx.lineWidth=1.5; ctx.strokeStyle=P.rule;
+  [0.25,0.5,0.75,1].forEach(function(f){
+    ctx.beginPath();
+    for(var i=0;i<5;i++){ var p=axisPt(i,R*f,cx,cy); i? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]); }
+    ctx.closePath(); ctx.stroke();
+  });
+  for(var i=0;i<5;i++){
+    var p=axisPt(i,R,cx,cy);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(p[0],p[1]); ctx.stroke();
+  }
+  ctx.beginPath();
+  for(var j=0;j<5;j++){
+    var v=Math.max(0,Math.min(100,sc[FACTORS[j].k]));
+    var q=axisPt(j,R*(v/100),cx,cy);
+    j? ctx.lineTo(q[0],q[1]) : ctx.moveTo(q[0],q[1]);
+  }
+  ctx.closePath();
+  ctx.fillStyle='rgba(46,85,70,.32)'; ctx.fill();
+  ctx.strokeStyle=P.turf; ctx.lineWidth=4; ctx.stroke();
+  ctx.font=F.sans(24); ctx.fillStyle=P.turf;
+  for(var n=0;n<5;n++){
+    var lp=axisPt(n,R+44,cx,cy);
+    ctx.textAlign = lp[0]>cx+16 ? 'left' : (lp[0]<cx-16 ? 'right' : 'center');
+    ctx.fillText(FACTORS[n].label, lp[0], lp[1]+8);
+  }
+
+  // 스코어 바
+  ctx.textAlign='left';
+  var y=960, L=150, RGT=930, barX=330, barW=RGT-60-barX;
+  FACTORS.forEach(function(f){
+    var v=sc[f.k], over=v>=50;
+    ctx.strokeStyle=P.rule; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(L,y-26); ctx.lineTo(RGT,y-26); ctx.stroke();
+    ctx.fillStyle=P.turf; ctx.font=F.serif(26); ctx.textAlign='left';
+    ctx.fillText(f.label, L, y);
+    ctx.fillStyle='rgba(23,54,43,.1)'; ctx.fillRect(barX, y-14, barW, 12);
+    ctx.fillStyle = over?P.turf:P.red; ctx.fillRect(barX, y-14, barW*v/100, 12);
+    ctx.fillStyle=P.brass; ctx.fillRect(barX+barW/2, y-19, 2, 22);
+    ctx.fillStyle = over?P.turf:P.red; ctx.font=F.mono(26); ctx.textAlign='right';
+    ctx.fillText(v, RGT, y);
+    y += 48;
+  });
+  ctx.strokeStyle=P.rule; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(L,y-26); ctx.lineTo(RGT,y-26); ctx.stroke();
+
+  // 배지
+  ctx.textAlign='center'; ctx.fillStyle=P.turf; ctx.font=F.serif(24);
+  ctx.fillText(r.badgeA.name+'   ·   '+r.badgeO.name, W/2, y+18);
+
+  // 푸터
+  ctx.fillStyle=P.inkSoft; ctx.font=F.mono(18); ctx.textAlign='left';
+  spacedText(ctx, SITE.replace(/^https?:\/\//,'').replace(/\/$/,''), W/2, 1262, 2);
+  ctx.textAlign='center'; ctx.font=F.sans(17);
+  ctx.fillText('재미로 보는 콘텐츠이며 심리학적 진단이 아닙니다', W/2, 1292);
+
+  return c;
+}
+
+function openCard(){
+  var c = buildCard();
+  var nick = S.profile.nick.trim() || '나';
+  var url = c.toDataURL('image/png');
+
+  var ov=document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML =
+    '<div style="max-width:460px;width:100%">'+
+      '<img src="'+url+'" alt="결과 카드">'+
+      '<p style="color:#E7E2D3;font-size:12.5px;line-height:1.7;text-align:center;margin:0 0 14px">'+
+        '모바일에서는 이미지를 <b>길게 눌러</b> 저장하세요.'+
+      '</p>'+
+      '<div style="display:flex;gap:10px">'+
+        '<a id="dl" href="'+url+'" download="라운드스타일_'+nick+'.png" '+
+          'style="flex:1;text-align:center;padding:13px;background:#F5F2E9;color:#17362B;text-decoration:none;font-size:15px;border-radius:2px">이미지 저장</a>'+
+        '<button id="close" style="flex:1;padding:13px;background:transparent;color:#F5F2E9;border:1px solid #F5F2E9;font-size:15px;border-radius:2px">닫기</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(ov);
+  document.body.style.overflow='hidden';
+  function close(){ ov.remove(); document.body.style.overflow=''; }
+  ov.querySelector('#close').addEventListener('click', close);
+  ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+}
+
+render();
+</script>
+</body>
+</html>
