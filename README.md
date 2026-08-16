@@ -14,7 +14,7 @@ golf-style-test/
 
 ## 배포 주소
 
-`https://ishur1125.github.io/golf-style-test/` 기준으로 이미 설정되어 있습니다.
+`https://ishur1125-design.github.io/golf-style-test/` 기준으로 이미 설정되어 있습니다.
 레포 이름을 `golf-style-test`가 아닌 다른 이름으로 만들 경우에만 `index.html`의 세 군데를 맞춰주세요.
 
 | 위치 | 줄 | 용도 |
@@ -35,8 +35,47 @@ golf-style-test/
 터미널로 올린다면:
 
 ```bash
-cd golf-style-test && git init && git add . && git commit -m "나의 라운드 스타일" && git branch -M main && git remote add origin https://github.com/ishur1125/golf-style-test.git && git push -u origin main
+cd golf-style-test && git init && git add . && git commit -m "나의 라운드 스타일" && git branch -M main && git remote add origin https://github.com/ishur1125-design/golf-style-test.git && git push -u origin main
 ```
+
+## 방문자 집계 (GoatCounter)
+
+기본값은 **꺼짐**입니다. `index.html`의 `var GC_CODE = "";`가 비어 있으면 집계 스크립트를
+아예 불러오지 않고, 고지 문구도 표시되지 않습니다.
+
+켜는 법:
+
+1. [goatcounter.com](https://www.goatcounter.com)에서 무료 가입 (개인·비상업 용도 무료)
+2. 원하는 코드를 정하면 대시보드 주소가 `https://<코드>.goatcounter.com`으로 발급됩니다
+3. `index.html`에서 `var GC_CODE = "";`의 따옴표 안에 그 **코드만** 넣습니다
+   ```js
+   var GC_CODE = "golfstyle";   // 대시보드가 golfstyle.goatcounter.com 인 경우
+   ```
+4. 재업로드하면 끝. 주소 전체나 `https://`를 넣으면 안 됩니다
+
+### 집계되는 항목
+
+| 경로 | 시점 |
+|---|---|
+| `/golf-style-test/` | 페이지 방문 (자동) |
+| `e/start` | 표지에서 시작하기 |
+| `e/teeoff` | 인적사항 입력 후 첫 홀 진입 |
+| `e/hole-01` ~ `e/hole-18` | 각 홀 응답 완료 — 이탈 지점 파악용 |
+| `e/complete` | 18홀 완주 |
+| `e/type/HHH` 등 8종 | 판정된 유형 |
+| `e/card-saved` / `e/text-copied` | 결과 공유 시도 |
+
+`e/teeoff` 대비 `e/complete` 비율이 완주율이고, `e/hole-NN`이 급감하는 지점이 이탈 구간입니다.
+`e/type/*` 8개를 합치면 유형별 실제 분포가 나옵니다.
+
+### 개인정보
+
+쿠키를 사용하지 않고 개인을 식별하지 않습니다. **닉네임·성별·나이대·구력·평균 타수·라운드 목적은
+전송하지 않습니다.** 전송되는 건 위 표의 경로 문자열과 GoatCounter가 자체 수집하는
+접속 국가·유입 경로·브라우저 종류뿐입니다. 집계를 켜면 표지 하단에 이 사실이 자동으로 고지됩니다.
+
+이벤트가 많다고 느껴지면 `answer()` 안의 `track('hole-...')` 한 줄만 지우세요.
+방문·완주·유형 집계는 그대로 유지됩니다.
 
 ## 카카오톡 미리보기가 갱신되지 않을 때
 

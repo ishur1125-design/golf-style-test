@@ -14,8 +14,8 @@
 <meta property="og:site_name" content="회계사의 클럽하우스">
 <meta property="og:title" content="나의 라운드 스타일 — 골프 심리테스트">
 <meta property="og:description" content="스코어는 실력이 만들지만, 라운드는 성향이 만듭니다. 18홀 문항으로 보는 나의 라운드 스타일.">
-<meta property="og:url" content="https://ishur1125.github.io/golf-style-test/">
-<meta property="og:image" content="https://ishur1125.github.io/golf-style-test/og-image.png">
+<meta property="og:url" content="https://ishur1125-design.github.io/golf-style-test/">
+<meta property="og:image" content="https://ishur1125-design.github.io/golf-style-test/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -123,7 +123,35 @@
    오락용 콘텐츠이며 심리학적 진단이 아닙니다.
 ------------------------------------------------------------------- */
 
-var SITE = "https://ishur1125.github.io/golf-style-test/"; // 결과 카드 하단에 찍히는 주소
+var SITE = "https://ishur1125-design.github.io/golf-style-test/"; // 결과 카드 하단에 찍히는 주소
+
+/* ------------------------------------------------------------------
+   방문 집계 (GoatCounter)
+
+   goatcounter.com 가입 후 받은 코드를 아래 GC_CODE에 넣으세요.
+   예) 대시보드 주소가 https://golfstyle.goatcounter.com 이면  GC_CODE = "golfstyle"
+   비워두면 집계 스크립트를 아예 불러오지 않습니다(= 완전히 꺼짐).
+
+   쿠키를 사용하지 않고 개인을 식별하지 않습니다.
+   집계 항목: 방문 / 홀별 진행 / 완주 / 유형 코드 / 카드 저장.
+   인적사항(닉네임·성별·나이대 등)은 전송하지 않습니다.
+------------------------------------------------------------------- */
+var GC_CODE = "";
+
+if(GC_CODE){
+  var gs = document.createElement('script');
+  gs.async = true;
+  gs.src = '//gc.zgo.at/count.js';
+  gs.setAttribute('data-goatcounter', 'https://'+GC_CODE+'.goatcounter.com/count');
+  document.head.appendChild(gs);
+}
+
+function track(path, title){
+  if(!GC_CODE || !window.goatcounter || !window.goatcounter.count) return;
+  try{
+    window.goatcounter.count({ path:'e/'+path, title:title||path, event:true });
+  }catch(e){ /* 집계 실패가 앱을 막지 않도록 */ }
+}
 
 var P = {
   turf:'#17362B', turfSoft:'#2E5546', paper:'#E7E2D3', card:'#F5F2E9',
@@ -462,6 +490,8 @@ function viewCover(){
   '<p class="center" style="font-size:11.5px;line-height:1.7;color:var(--ink-soft);margin-top:20px">'+
     '리커트 문항은 퍼블릭 도메인 문항 풀인 IPIP(International Personality Item Pool)의<br>'+
     'Big-Five Factor Markers를 골프 상황으로 각색했습니다.'+
+    (GC_CODE ? '<br><br>방문 수 집계를 위해 쿠키를 쓰지 않는 익명 통계 도구를 사용합니다.<br>'+
+               '입력하신 닉네임과 인적사항은 전송되지 않습니다.' : '')+
   '</p>';
 }
 
@@ -671,6 +701,7 @@ function saveNick(){
 function answer(v){
   S.answers[S.idx] = v;
   var last = S.idx;
+  track('hole-'+String(last+1).padStart(2,'0'), (last+1)+'홀 응답');
   setTimeout(function(){
     if(last === INTERLUDE_AT-1){ go('interlude'); return; }
     if(last < Q.length-1){ S.idx=last+1; window.scrollTo(0,0); render(); return; }
@@ -687,6 +718,9 @@ function startAnalyzing(){
     S.analyzeStep++;
     if(S.analyzeStep >= total){
       clearInterval(timer);
+      var r = resultOf(score());
+      track('complete', '18홀 완주');
+      track('type/'+r.code, r.type.name);
       setTimeout(function(){ go('result'); }, 550);
     }
     render();
@@ -711,7 +745,7 @@ app.addEventListener('click', function(e){
   if(!b) return;
   var act = b.getAttribute('data-act');
 
-  if(act==='toProfile') go('profile');
+  if(act==='toProfile'){ track('start', '시작하기'); go('profile'); }
   else if(act==='toCover') { saveNick(); go('cover'); }
   else if(act==='pick'){
     saveNick();
@@ -719,13 +753,14 @@ app.addEventListener('click', function(e){
     S.profile[k] = (S.profile[k]===v) ? '' : v;
     render();
   }
-  else if(act==='toQuiz'){ saveNick(); S.idx=0; go('quiz'); }
+  else if(act==='toQuiz'){ saveNick(); track('teeoff', '첫 홀 티오프'); S.idx=0; go('quiz'); }
   else if(act==='ans') answer(parseInt(b.getAttribute('data-v'),10));
   else if(act==='back'){ if(S.idx>0){ S.idx--; window.scrollTo(0,0); render(); } }
   else if(act==='resume'){ S.idx=INTERLUDE_AT; go('quiz'); }
   else if(act==='restart') restart();
   else if(act==='copy'){
     var txt=shareText();
+    track('text-copied', '텍스트 복사');
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(function(){
         b.textContent='복사했습니다';
@@ -733,7 +768,7 @@ app.addEventListener('click', function(e){
       });
     }
   }
-  else if(act==='card') openCard();
+  else if(act==='card'){ track('card-saved', '결과 카드 생성'); openCard(); }
 });
 
 document.addEventListener('keydown', function(e){
